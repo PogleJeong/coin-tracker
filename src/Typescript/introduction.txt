@@ -1,0 +1,25 @@
+TypeScript 는 JS 를 기반으로한 프로그래밍 언어 - JS 와 매우 유사하지만 새로운 기능이 많음.
+
+차이점이자 강점 : Strongly-typed 언어 
+
+프로그래밍 언어가 작동하기 전에 type 을 확인함. 
+예를 들어 함수를 정의 했을 때, Typescript 는 매개변수에 대한 type 을 지정해줌.
+
+ex)
+const plus = (a, b) => a + b; 를 사용했을 때, 매개변수 a, b 에 대한 type 을 지정하여
+다른 type이 들어가는 것을 막아줄 수 있음.
+
+propsType 를 이용한 type 정의보다 발전한 버전.
+
+ex2) 
+객체에서 값을 가져오려고 할 때, 사용하려는 객체의 값이 일치하는지 확인해줌
+
+const user = {
+    firstName: "bob",
+    lastName: "pop",
+    role: "student",
+}
+console.log(user.name) 
+
+
+그런데 웹페이지가 읽을 수 있는 언어는 JS 밖에 없기에 Typescript 에서 JS 로 변환필요.
