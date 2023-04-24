@@ -30,7 +30,9 @@ const Coin = styled.li`
     border-radius: 15px;
     margin-bottom: 10px;
     a {
-        display: block
+        display: flex;
+        align-items: center;
+        padding: 20px;
         transition : color 0.2s ease-in;
     }
     &:hover {
@@ -50,35 +52,12 @@ const Loader = styled.span`
     text-align: center;
     font-size: 30px;
 `;
-const coins = [
-    {
-        id: "btc-bitcoin",
-        name: "Bitcoin",
-        symbol: "BTC",
-        rank: 1,
-        is_new: false,
-        is_active: true,
-        type: "coin",
-    },
-    {
-        id: "eth-ethereum",
-        name: "Ethereum",
-        symbol: "ETH",
-        rank: 2,
-        is_new: false,
-        is_active: true,
-        type: "coin",
-    },
-    {
-        id: "hex-hex",
-        name: "HEX",
-        symbol: "HEX",
-        rank: 3,
-        is_new: false,
-        is_active: true,
-        type: "token",
-    },
-]
+
+const CoinLogo = styled.img`
+    height:25px;
+    aspect-ratio: 1/1;
+    margin-right: 20px;
+`;
 
 interface CoinInterface {
     id: string,
@@ -90,6 +69,10 @@ interface CoinInterface {
     type: string,
 }
 
+
+// ** Link component 의 다양한 option!
+// Link to={} state={}
+// 단 Link state 로 받은 데이터는 무조건 Link state를 적어둔 페이지를 거쳐야 값을 받을 수 있다.
 function CoinTrackerHome() {
     const [loading, setLoading] = useState<boolean>(true);
     const [coins, setCoins] = useState<CoinInterface[]>([]);
@@ -115,7 +98,9 @@ function CoinTrackerHome() {
                 <CoinsList>
                     {coins.map((coin)=>(
                     <Coin key={coin.id}>
-                        <Link to={`/coin-tracker/${coin.id}`}>
+                    
+                        <Link to={`/coin-tracker/${coin.id}`} state={coin.name}>
+                            <CoinLogo src={`https://coinicons-api.vercel.app/api/icon/${coin.symbol.toLowerCase()}`} />
                             {coin.name} &rarr;
                         </Link>
                     </Coin>))}
