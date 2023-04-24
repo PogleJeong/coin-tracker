@@ -5,7 +5,7 @@
 
 import { useState } from "react";
 
-const Styled_App = () => {
+const TypescriptPart = () => {
     const [ value, setValue ] = useState("");
 
     // event 는 'any' 로 설정되있음 하지만 명시해주는게 좋음
@@ -20,6 +20,7 @@ const Styled_App = () => {
     const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         console.log("hello", value);
+        alert("form event occured");
     }
     return(
         <div>
@@ -35,4 +36,4 @@ const Styled_App = () => {
         </div>
     )
 }
-export default Styled_App;
+export default TypescriptPart;

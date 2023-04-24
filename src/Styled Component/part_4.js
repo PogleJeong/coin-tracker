@@ -54,7 +54,7 @@ const Box = styled.div`
       }
     }
 `;
-const Styled_App = () => {
+const StyledComponentPart = () => {
   return (
     <Wrapper>
       <Box>
@@ -64,4 +64,4 @@ const Styled_App = () => {
   )
 }
 
-export default Styled_App;
+export default StyledComponentPart;

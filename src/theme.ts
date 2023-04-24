@@ -4,10 +4,12 @@ export const lightTheme:DefaultTheme = {
     bgColor: "white",
     textColor: "black",
     btnColor: "tomato",
+    accentColor: "yellow",
 }
 
 export const darkTheme:DefaultTheme = {
     bgColor: "black",
     textColor: "white",
-    btnColor: "teal",    
+    btnColor: "teal", 
+    accentColor: "tomato",
 }
