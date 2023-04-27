@@ -9,6 +9,8 @@ import User from "./screens/users/Users";
 import Followers from "./screens/users/Followers";
 import CoinTrackerHome from "./CoinTracker/CoinTrackerHome";
 import Coin from "./CoinTracker/Coin";
+import Price from "./CoinTracker/Price";
+import Chart from "./CoinTracker/Chart";
 
 // router 를 array 로 표현할 수 있게 해줌.
 const router = createBrowserRouter([
@@ -50,6 +52,16 @@ const router = createBrowserRouter([
             {
                 path: "coin-tracker/:coinId",
                 element: <Coin />,
+                children: [
+                    {
+                        path: "price",
+                        element: <Price />
+                    },
+                    {
+                        path: "chart",
+                        element: <Chart />
+                    }
+                ]
             }
         ],
         // 작성한 path에 맞는 component가 없거나 component 내에서 충돌이 발생하면 랜더링됨
