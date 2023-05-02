@@ -2,8 +2,6 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import { useLocation, useParams, useMatch, Outlet, Link } from "react-router-dom";
 import styled from "styled-components";
-import Chart from "./Chart";
-import Price from "./Price";
 
 // react-router-dom v6 이상인 경우 interface 설정안해도 가능
 // 자동으로 useParams 는 type 이 string or undefined 로 설정됨
@@ -160,6 +158,8 @@ function Coin() {
     const { state } = useLocation();
     const [info, setInfo] = useState<InfoData>();
     const [priceInfo, setPriceInfo] = useState<PriceData>();
+
+    // useMatch(url) 현재 페이지가 안자안의 url 과 같은 url이면 true 아니면 false 
     const priceMatch = useMatch("/coin-tracker/:coinId/price");
     const chartMatch = useMatch("/coin-tracker/:userId/chart");
     // useEffect 의 첫번째 () 에선 async 사용못함 
@@ -219,11 +219,12 @@ function Coin() {
                   </OverviewItem>
                 </Overview>
                 <Tabs>
+                    {/* 현재 url 과 useMatch(url)의 url 과 같으면 active 됨. */ }
                     <Tab isActive={chartMatch !== null}>
-                     <Link to="chart">Chart</Link>
+                      <Link to="chart">Chart</Link>
                     </Tab>
                     <Tab isActive={priceMatch !== null}>
-                        <Link to="price">Price</Link>
+                      <Link to="price">Price</Link>
                     </Tab>
                 </Tabs>
                 <Outlet />

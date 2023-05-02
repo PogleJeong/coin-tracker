@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import axios from "axios";
+import { fetchCoins } from "../api";
+import { useQuery } from "react-query";
 
 // 모바일처럼 가운데에 위치할 수 있게 스타일
 const Container = styled.div`
@@ -74,6 +76,18 @@ interface CoinInterface {
 // Link to={} state={}
 // 단 Link state 로 받은 데이터는 무조건 Link state를 적어둔 페이지를 거쳐야 값을 받을 수 있다.
 function CoinTrackerHome() {
+    
+    // 첫번째 인자 : query 의 고유식별자
+    // 두번째 인자 : fetcher 
+    // 반환값 : isLoading (boolean) : 두번째 인자의 fetcher 함수의 종료유무를 알려줌
+    // 반환값2 : fetcher 함수의 return 값 저장
+    // ++ 새로고침하거나 다시 돌아와도 useQuery 는 데이터를 유지함(캐시)
+    const {isLoading, data} = useQuery<CoinInterface[]>("allCoins", fetchCoins);
+
+    /*     
+    [ react-query 사용으로 변경하기 위해 주석처리 ]
+    reacut query 가 주석처리된 부분을 한 줄의 코드로 변경시켜줌
+
     const [loading, setLoading] = useState<boolean>(true);
     const [coins, setCoins] = useState<CoinInterface[]>([]);
     
@@ -82,21 +96,20 @@ function CoinTrackerHome() {
         setCoins(response.data.slice(0,100));
         setLoading(false);
     }
-    
     useEffect(()=>{
         getCoinApi();
-    }, []);
+    }, []) */;
 
     return (
         <Container>
             <Header>
                 <Title>코인!</Title>
             </Header>
-                { loading ? (
+                { isLoading ? (
                     <Loader>"Loading..."</Loader>
                 ):(
                 <CoinsList>
-                    {coins.map((coin)=>(
+                    {data?.map((coin)=>(
                     <Coin key={coin.id}>
                     
                         <Link to={`/coin-tracker/${coin.id}`} state={coin.name}>
