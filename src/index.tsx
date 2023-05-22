@@ -1,16 +1,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { ThemeProvider } from 'styled-components';
-import { lightTheme, darkTheme } from './theme';
-import router from './Router';
-
 // provider 구조!!
-import { RouterProvider } from 'react-router-dom';
-import { QueryClient, QueryClientProvider } from 'react-query';
-
-
 // ThemeProvider 를 통해 모든 파일에서 theme 에 접근가능
 // QueryClientProvider 를 통해 모든 파일에서 queryClient 에 접근가능
+import { RouterProvider } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from 'react-query';
+// recoil : index.js (루트컴포넌트)에 감싸준다
+import { RecoilRoot } from 'recoil';
+
+import router from './Router';
+
+
 const queryClient = new QueryClient
 
 const root = ReactDOM.createRoot(
@@ -18,12 +18,11 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <React.StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <ThemeProvider theme={darkTheme}>
-        <RouterProvider router={router}/>
-      </ThemeProvider>
-    </QueryClientProvider>
-    
+    <RecoilRoot>
+      <QueryClientProvider client={queryClient}>
+          <RouterProvider router={router}/>
+      </QueryClientProvider>
+    </RecoilRoot>
   </React.StrictMode>
 );
 

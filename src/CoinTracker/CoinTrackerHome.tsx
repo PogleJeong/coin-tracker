@@ -1,9 +1,7 @@
 // Reset CSS : https://github.com/zacanger/styled-reset/blob/master/src/index.ts
 
-import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import axios from "axios";
 import { fetchCoins } from "../api";
 import { useQuery } from "react-query";
 
@@ -103,7 +101,7 @@ function CoinTrackerHome() {
     return (
         <Container>
             <Header>
-                <Title>코인!</Title>
+                <Title>코인!</Title><br/>
             </Header>
                 { isLoading ? (
                     <Loader>"Loading..."</Loader>

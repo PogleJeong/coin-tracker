@@ -1,7 +1,11 @@
-import axios from "axios";
-import { useState, useEffect } from "react";
+
 import { useLocation, useParams, useMatch, Outlet, Link } from "react-router-dom";
 import styled from "styled-components";
+import { fetchCoinInfo } from "../api";
+import { useQuery } from "react-query";
+import { useSetRecoilState, useRecoilValue } from 'recoil';
+
+import { isDarkAtom } from "../Recoil/atoms";
 
 // react-router-dom v6 이상인 경우 interface 설정안해도 가능
 // 자동으로 useParams 는 type 이 string or undefined 로 설정됨
@@ -153,40 +157,32 @@ interface PriceData {
 }
 
 function Coin() {
-    const [loading, setLoading] = useState(true);
-    const { coinId } = useParams();
-    const { state } = useLocation();
-    const [info, setInfo] = useState<InfoData>();
-    const [priceInfo, setPriceInfo] = useState<PriceData>();
+  const setDarkAtom = useSetRecoilState(isDarkAtom);
+  const isDark = useRecoilValue(isDarkAtom);
+  const { coinId } = useParams();
+  const { state } = useLocation();
+  
+  const toggleDarkMode = () => setDarkAtom((prev)=> !prev);
 
-    // useMatch(url) 현재 페이지가 안자안의 url 과 같은 url이면 true 아니면 false 
-    const priceMatch = useMatch("/coin-tracker/:coinId/price");
-    const chartMatch = useMatch("/coin-tracker/:userId/chart");
-    // useEffect 의 첫번째 () 에선 async 사용못함 
-    // 함수 정의하지 않고 바로 실행 (async() => { 실행시킬 코드 })();
-    useEffect(()=>{
-        (async()=> {
-        await axios.get(`https://api.coinpaprika.com/v1/coins/${coinId}`)
-        .then((response)=>{
-            const infoData = response.data
-            setInfo(infoData);
-            });
-
-        await axios.get(`https://api.coinpaprika.com/v1/tickers/${coinId}`)
-        .then((response)=>{
-            const priceData = response.data
-            setPriceInfo(priceData);
-            });
-        })();
-        setLoading(false);
-    },[coinId]);
-    // react hook 에서는 dependency 를 써주는게 최적화에 좋음
-    // 어처피 coinId 는 안에서 변하지 않으므로 써주어도 상관없음.
+  // useMatch(url) 현재 페이지가 안자안의 url 과 같은 url이면 true 아니면 false 
+  const priceMatch = useMatch("/coin-tracker/:coinId/price");
+  const chartMatch = useMatch("/coin-tracker/:userId/chart");
+  // react query 의 key 는 array 안에 속해있음. 따라서 다른 key를 추가하기 위해서는 array 사용
+  // 기존변수명 : 사용할 변수명
+  const {isLoading: infoLoading, data: infoData}  = useQuery<InfoData>(["info", coinId], ()=> fetchCoinInfo(coinId!));
+  const {isLoading: tickersLoading, data: tickersData} = useQuery<PriceData>(["tickers",coinId], ()=> fetchCoinInfo(coinId!));
+    
+    const loading = infoLoading || tickersLoading;
 
     return(
         <Container>
             <Header>
-            <Title>{state || "Loading..."}</Title>
+            <Title>{coinId || "Loading..."}</Title><br/>
+            { isDark?
+            <button onClick={toggleDarkMode}>라이트모드</button>
+            :
+            <button onClick={toggleDarkMode}>다크모드</button>
+            }
             </Header>
             {loading ? (
                 <Loader>Loading...</Loader> 
@@ -196,26 +192,26 @@ function Coin() {
                 <Overview>
                   <OverviewItem>
                     <span>Rank:</span>
-                    <span>{info?.rank}</span>
+                    <span>{infoData?.rank}</span>
                   </OverviewItem>
                   <OverviewItem>
                     <span>Symbol:</span>
-                    <span>${info?.symbol}</span>
+                    <span>${infoData?.symbol}</span>
                   </OverviewItem>
                   <OverviewItem>
-                    <span>Open Source:</span>
-                    <span>{info?.open_source ? "Yes" : "No"}</span>
+                    <span>Price:</span>
+                    <span>{infoData?.open_source ? "Yes" : "No"}</span>
                   </OverviewItem>
                 </Overview>
-                <Description>{info?.description}</Description>
+                <Description>{infoData?.description}</Description>
                 <Overview>
                   <OverviewItem>
                     <span>Total Suply:</span>
-                    <span>{priceInfo?.total_supply}</span>
+                    <span>{tickersData?.total_supply}</span>
                   </OverviewItem>
                   <OverviewItem>
                     <span>Max Supply:</span>
-                    <span>{priceInfo?.max_supply}</span>
+                    <span>{tickersData?.max_supply}</span>
                   </OverviewItem>
                 </Overview>
                 <Tabs>
@@ -227,7 +223,7 @@ function Coin() {
                       <Link to="price">Price</Link>
                     </Tab>
                 </Tabs>
-                <Outlet />
+                <Outlet context={{coinId}}/>
               </>
             )}
         </Container>
