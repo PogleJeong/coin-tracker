@@ -4,7 +4,7 @@ export const lightTheme:DefaultTheme = {
     bgColor: "whitesmoke",
     textColor: "black",
     btnColor: "tomato",
-    accentColor: "#9c88ff",
+    accentColor: "blue",
 }
 
 export const darkTheme:DefaultTheme = {

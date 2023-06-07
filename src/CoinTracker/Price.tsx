@@ -2,21 +2,52 @@ import { useQuery } from "react-query";
 import { useOutletContext } from "react-router-dom";
 import { fetchCoinHistory } from "../api";
 import styled from "styled-components";
+import { useRecoilValue } from "recoil";
+import { DarkMode } from "../Recoil/atoms";
 
-const Artcle = styled.article`
-    position: relative;
+const Wrapper = styled.div<{isDark: boolean}>`
+    background-color: ${(props)=>props.isDark ? "gray": "beige"};
 `
 
 const Table = styled.div`
+    display: flex;
     position: absolute;
-    left: -100%;
-    border-collapse: collapse;
+    flex-direction: column;
+    left: -20%;
+    width: 140%;
+`
+
+const Flex = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    //border: 2px solid ${(props)=>props.theme.textColor};
+    padding: 20px 10px;
+`
+
+const Header = styled.div<{isDark: boolean}>`
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr 1fr 2fr;
+    background-color: ${(props)=>props.isDark ? "skyblue" : "beige"};
+`
+
+const Head = styled(Flex)`
+    font-size: 24px;
+    font-weight: bold;
+`
+
+const Info = styled(Flex)`
+    font-size: 18px;
 `
 
 const Row = styled.tr`
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr 1fr 2fr;
     border: 1px solid white;
     padding: 25px;
 `
+
+/* 
 const Head = styled.th`
     border: 1px solid white;
     padding: 25px;
@@ -33,8 +64,7 @@ const Dollers = styled.td`
     border: 1px solid white;
     padding: 25px;
     font-size: 18px;
-   
-`
+` */
 
 interface PriceProps {
     coinId: String,
@@ -52,37 +82,38 @@ interface IChartData {
 }
 
 function Price() {
+    const isDark = useRecoilValue(DarkMode);
     const { coinId } = useOutletContext<PriceProps>()
     const { isLoading, data } = useQuery<IChartData[]>(["price", coinId], ()=>fetchCoinHistory(coinId!));
     return(
-        <div>
+        <Wrapper isDark={isDark}>
             {isLoading ? (
-                "loading"
+                "loading..."
             ) : (
-            <Artcle>
-                <Table>
-                    <Row>
-                        <Head>Open Time</Head>
-                        <Head>Close Time</Head>
-                        <Head>Open</Head>
-                        <Head>High</Head>
-                        <Head>Low</Head>
-                        <Head>Close</Head>
-                    </Row>
-                    {data?.map((info)=>(
-                        <Row>
-                            <Time>{new Date(Number(info.time_open) * 1000).toUTCString()}</Time>
-                            <Time>{new Date(Number(info.time_close) * 1000).toUTCString()}</Time>
-                            <Dollers>${Number(info.open).toFixed(2)}</Dollers>
-                            <Dollers>${Number(info.high).toFixed(2)}</Dollers>
-                            <Dollers>${Number(info.low).toFixed(2)}</Dollers>
-                            <Dollers>${Number(info.close).toFixed(2)}</Dollers>
-                        </Row>
-                        ))}
-                </Table>
-            </Artcle>
+            <>
+            <Table>
+                <Header isDark={isDark}>
+                    <Head>Open Time</Head>
+                    <Head>Open</Head>
+                    <Head>High</Head>
+                    <Head>Low</Head>
+                    <Head>Close</Head>
+                    <Head>Close Time</Head>
+                </Header>
+                {data?.map((info, index)=>(
+                <Row>
+                    <Info >{new Date(Number(info.time_open) * 1000).toLocaleString('ko-KR', { timeZone: 'UTC' })}</Info>
+                    <Info>${Number(info.open).toFixed(2)}</Info>
+                    <Info>${Number(info.high).toFixed(2)}</Info>
+                    <Info>${Number(info.low).toFixed(2)}</Info>
+                    <Info>${Number(info.close).toFixed(2)}</Info>
+                    <Info>{new Date(Number(info.time_close) * 1000).toLocaleString('ko-KR', { timeZone: 'UTC' })}</Info>
+                </Row>
+                ))}
+            </Table>
+            </>
             )}
-        </div>
+        </Wrapper>
     )
 }
 export default Price;

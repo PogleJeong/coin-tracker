@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { Outlet } from "react-router-dom";
+import styled, { createGlobalStyle } from "styled-components";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
-import { createGlobalStyle } from "styled-components";
 
 // React Query 를 통해 저장된 캐시값을 보기 위함
 import { ReactQueryDevtools } from "react-query/devtools";
@@ -13,7 +13,7 @@ import { lightTheme, darkTheme } from './theme';
 
 // recoil
 import { useRecoilValue } from 'recoil';
-import { isDarkAtom } from './Recoil/atoms';
+import { DarkMode } from './Recoil/atoms';
 
 /*
 Outlet은 하위 경로 요소를 렌더링하기 위해 상위 경로 요소에서 사용합니다.
@@ -76,8 +76,6 @@ const GlobalStyle = createGlobalStyle`
     border-collapse: collapse;
     border-spacing: 0;
   }
-
-
   * {
     box-sizing: border-box;
   }
@@ -90,22 +88,22 @@ const GlobalStyle = createGlobalStyle`
     text-decoration: none;
     color: inherit;
   }
-
 `;
 
+
 function App() {
-  const isDark = useRecoilValue(isDarkAtom);
+  const isDark = useRecoilValue(DarkMode);
   return (
     <>
-    <ThemeProvider theme={isDark ? darkTheme : lightTheme}>
-      <GlobalStyle />
-      <Header />
-      <Outlet />
-      <Footer />
-      {/* ReactQuery 에 의해 저장된 캐시데이터를 볼 수 있음! 
-      개발자 도구처럼 편하게 이용가능! */}
+      <ThemeProvider theme={isDark ? darkTheme : lightTheme}>
+        <GlobalStyle />
+        <Header />
+        <Outlet />
+        <Footer />
+        {/* ReactQuery 에 의해 저장된 캐시데이터를 볼 수 있음! 
+        개발자 도구처럼 편하게 이용가능! */}
 
-    </ThemeProvider>
+      </ThemeProvider>
     </>
   );
 }

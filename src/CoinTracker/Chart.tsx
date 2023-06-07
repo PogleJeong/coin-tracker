@@ -4,7 +4,7 @@ import { fetchCoinHistory } from "../api";
 import ReactApexChart from "react-apexcharts";
 
 import { useRecoilValue} from 'recoil';
-import { isDarkAtom } from "../Recoil/atoms";
+import { DarkMode } from "../Recoil/atoms";
 
 /**
     APEXCHART 를 통해 Chart 시각화 : JS 라이브러리
@@ -29,7 +29,7 @@ interface IChartData {
 }
 
 function Chart() {
-    const isDark = useRecoilValue(isDarkAtom);
+    const isDark = useRecoilValue(DarkMode);
     const { coinId } = useOutletContext<ChartProps>();
     const { isLoading, data } = useQuery<IChartData[]>(["chart", coinId], ()=>fetchCoinHistory(coinId));
 

@@ -5,13 +5,14 @@ import { fetchCoinInfo } from "../api";
 import { useQuery } from "react-query";
 import { useSetRecoilState, useRecoilValue } from 'recoil';
 
-import { isDarkAtom } from "../Recoil/atoms";
+import { DarkMode } from "../Recoil/atoms";
 
 // react-router-dom v6 이상인 경우 interface 설정안해도 가능
 // 자동으로 useParams 는 type 이 string or undefined 로 설정됨
 const Container = styled.div`
+  position: relative;
     padding: 0px 20px;
-    max-width: 480px;
+    max-width: 800px;
     margin: 0 auto;
 `;
 
@@ -22,8 +23,15 @@ const Header = styled.header`
     align-items: center;
 `;
 
+const CoinLogo = styled.img`
+    height:60px;
+    aspect-ratio: 1/1;
+    margin-right: 20px;
+`;
+
 const Title = styled.h1`
     font-size: 48px;
+    font-weight: bold;
     color: ${props => props.theme.accentColor};
 `
 
@@ -32,6 +40,12 @@ const Loader = styled.span`
     text-align: center;
     font-size: 30px;
 `;
+
+const Overviews = styled.div`
+  display: grid;
+  grid-template-columns: 1fr, 2fr;
+`
+
 
 const Overview = styled.div`
   display: flex;
@@ -68,10 +82,10 @@ const Tab = styled.span<{ isActive: boolean }>`
   text-transform: uppercase;
   font-size: 12px;
   font-weight: 400;
-  background-color: rgba(255, 255, 255, 0.5);
+  background-color: ${(props)=> props.isActive ? "gray" :  "rgba(255, 255, 255, 0.5)"};
   padding: 7px 0px;
   border-radius: 10px;
-  color: ${(props) => props.isActive ? props.theme.accentColor : props.theme.textColor};
+  color: ${(props) => props.isActive ? "white" : "black"};
   a {
     display: block;
   }
@@ -157,12 +171,7 @@ interface PriceData {
 }
 
 function Coin() {
-  const setDarkAtom = useSetRecoilState(isDarkAtom);
-  const isDark = useRecoilValue(isDarkAtom);
   const { coinId } = useParams();
-  const { state } = useLocation();
-  
-  const toggleDarkMode = () => setDarkAtom((prev)=> !prev);
 
   // useMatch(url) 현재 페이지가 안자안의 url 과 같은 url이면 true 아니면 false 
   const priceMatch = useMatch("/coin-tracker/:coinId/price");
@@ -177,43 +186,40 @@ function Coin() {
     return(
         <Container>
             <Header>
-            <Title>{coinId || "Loading..."}</Title><br/>
-            { isDark?
-            <button onClick={toggleDarkMode}>라이트모드</button>
-            :
-            <button onClick={toggleDarkMode}>다크모드</button>
-            }
+              <CoinLogo src={`https://coinicons-api.vercel.app/api/icon/${infoData?.symbol.toLowerCase()}`} />
+              <Title>{coinId || "Loading..."}</Title>
             </Header>
             {loading ? (
                 <Loader>Loading...</Loader> 
             )
             : (
                 <>
-                <Overview>
-                  <OverviewItem>
-                    <span>Rank:</span>
-                    <span>{infoData?.rank}</span>
-                  </OverviewItem>
-                  <OverviewItem>
-                    <span>Symbol:</span>
-                    <span>${infoData?.symbol}</span>
-                  </OverviewItem>
-                  <OverviewItem>
-                    <span>Price:</span>
-                    <span>{infoData?.open_source ? "Yes" : "No"}</span>
-                  </OverviewItem>
-                </Overview>
-                <Description>{infoData?.description}</Description>
-                <Overview>
-                  <OverviewItem>
-                    <span>Total Suply:</span>
-                    <span>{tickersData?.total_supply}</span>
-                  </OverviewItem>
-                  <OverviewItem>
-                    <span>Max Supply:</span>
-                    <span>{tickersData?.max_supply}</span>
-                  </OverviewItem>
-                </Overview>
+                  <Overview>
+                    <OverviewItem>
+                      <span>Rank:</span>
+                      <span>{infoData?.rank}</span>
+                    </OverviewItem>
+                    <OverviewItem>
+                      <span>Symbol:</span>
+                      <span>${infoData?.symbol}</span>
+                    </OverviewItem>
+                    <OverviewItem>
+                      <span>Price:</span>
+                      <span>{infoData?.open_source ? "Yes" : "No"}</span>
+                    </OverviewItem>
+                  </Overview>
+                  <Description>{infoData?.description}</Description>
+                  <Overview>
+                    <OverviewItem>
+                      <span>Total Suply:</span>
+                      <span>{tickersData?.total_supply}</span>
+                    </OverviewItem>
+                    <OverviewItem>
+                      <span>Max Supply:</span>
+                      <span>{tickersData?.max_supply}</span>
+                    </OverviewItem>
+                  </Overview>
+         
                 <Tabs>
                     {/* 현재 url 과 useMatch(url)의 url 과 같으면 active 됨. */ }
                     <Tab isActive={chartMatch !== null}>
