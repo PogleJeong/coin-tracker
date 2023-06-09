@@ -67,6 +67,7 @@ const SearchItems = styled.li`
     align-items: center;
     height: 60px;
     padding: 0px 20px;
+    color: black;
     &:hover {
         background-color: azure;
     }
@@ -113,6 +114,13 @@ const CoinLogo = styled.img`
     margin-right: 20px;
 `;
 
+const CoinName = styled.span`
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    font-size: 14px;
+`
+
 interface CoinInterface {
     id: string,
     name: string,
@@ -121,9 +129,7 @@ interface CoinInterface {
     is_new: boolean,
     is_active: boolean,
     type: string,
-}
-
-
+};
 
 // ** Link component 의 다양한 option!
 // Link to={} state={}
@@ -165,12 +171,12 @@ function CoinTrackerHome() {
                         <SearchResult>
                             {data?.filter((item)=> item.name.toLowerCase().includes(searchCoin)).map((coin)=>(
                             <SearchList>
-                                <SearchItems>
-                                    <Link to={`/coin-tracker/${coin.id}`} state={coin.name}>
+                                <Link to={`/coin-tracker/${coin.id}`} state={coin.name}>
+                                    <SearchItems>
                                         <CoinLogo src={`https://coinicons-api.vercel.app/api/icon/${coin.symbol.toLowerCase()}`}></CoinLogo>
-                                        <span>{coin.name}</span>
-                                    </Link>
-                                </SearchItems>
+                                        <CoinName>{coin.name}</CoinName>
+                                    </SearchItems>
+                                </Link>
                             </SearchList>
                             ))}
                             

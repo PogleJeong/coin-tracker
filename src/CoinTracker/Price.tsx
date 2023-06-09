@@ -13,8 +13,12 @@ const Table = styled.div`
     display: flex;
     position: absolute;
     flex-direction: column;
+    padding: 10px 30px;
+    margin: 100px 0px;
     left: -20%;
     width: 140%;
+    max-height: 1000px;
+    overflow: scroll;
 `
 
 const Flex = styled.div`
@@ -40,11 +44,19 @@ const Info = styled(Flex)`
     font-size: 18px;
 `
 
-const Row = styled.tr`
+const Row = styled.div<{isDark: boolean}>`
     display: grid;
     grid-template-columns: 2fr 1fr 1fr 1fr 1fr 2fr;
-    border: 1px solid white;
+    background-color:${(props)=> props.isDark ? "gray" : "white"};
+    border: none;
+    border-radius: 20px;
+    margin-top: 20px;
     padding: 25px;
+    transition: background-color 2s, scale 2s;
+    &:hover {
+        background-color: ${(props)=> props.isDark ? "skyblue" : "beige"};
+        scale: 1.05;
+    }
 `
 
 /* 
@@ -101,7 +113,7 @@ function Price() {
                     <Head>Close Time</Head>
                 </Header>
                 {data?.map((info, index)=>(
-                <Row>
+                <Row isDark={isDark} key={index}>
                     <Info >{new Date(Number(info.time_open) * 1000).toLocaleString('ko-KR', { timeZone: 'UTC' })}</Info>
                     <Info>${Number(info.open).toFixed(2)}</Info>
                     <Info>${Number(info.high).toFixed(2)}</Info>
